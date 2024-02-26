@@ -14,18 +14,10 @@ import store from './AppModules/Redux/store.js';
 import AppNavigation from './AppModules/Navigation/AppNavigation.js';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <Provider store={store}>
-        <AppNavigation />
-      </Provider>
-    </SafeAreaView>
+    <Provider store={store}>
+      <AppNavigation />
+    </Provider>
   );
 }
 

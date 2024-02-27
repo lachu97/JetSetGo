@@ -3,11 +3,15 @@ import {
   Button,
   FlatList,
   LayoutAnimation,
-  SafeAreaView,
   useWindowDimensions,
   View,
 } from 'react-native';
-import {ActivityIndicator, MD2Colors, Text} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  MD2Colors,
+  Text,
+  TouchableRipple,
+} from 'react-native-paper';
 import homeStyles from '../Styles/HomeStyles';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -17,10 +21,11 @@ import {
 } from '../Redux/AppActions';
 import CardComponet from './Components/Card';
 import SortDialog, {AirlineDialog} from './Components/SortDialog';
-import { FlashList } from "@shopify/flash-list";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const [showSort, setShowSort] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [showAirline, setShowAirline] = useState(false);
   const [sortValue, setSortValue] = useState('');
   const [sortAirline, setAirline] = useState('');
@@ -37,6 +42,9 @@ const HomeScreen = () => {
     await setShowSort(false);
   }, []);
   useEffect(() => {
+    if (sortValue === '') {
+      return;
+    }
     dispatch(
       sortDataAction({
         data: flightData,
@@ -50,6 +58,9 @@ const HomeScreen = () => {
     await setShowAirline(false);
   }, []);
   useEffect(() => {
+    if (sortAirline === '') {
+      return;
+    }
     dispatch(
       sortAirlineAction({
         data: flightData,
@@ -57,6 +68,21 @@ const HomeScreen = () => {
       }),
     );
   }, [sortAirline]);
+  const onPulltoRefresh = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+    dispatch(getFlightDataAction());
+  }, [dispatch]);
+
+  const clearFilters = useCallback(async () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+
+    dispatch(getFlightDataAction());
+    await setSortValue('');
+    await setAirline('');
+  }, []);
+  const renderItems = useCallback(({item}) => {
+    return <CardComponet data={item} />;
+  }, []);
   return (
     <View style={homeStyles.container}>
       <Text style={homeStyles.textStyles}>Flight Search App</Text>
@@ -83,14 +109,29 @@ const HomeScreen = () => {
           color={MD2Colors.black}
         />
       ) : null}
+      {sortAirline !== '' || sortValue !== '' ? (
+        <TouchableRipple style={homeStyles.clearFilters} onPress={clearFilters}>
+          <View style={{flexDirection: 'row'}}>
+            <MaterialCommunityIcons
+              size={24}
+              name={'delete'}
+              color={MD2Colors.red500}
+            />
+            <Text style={homeStyles.text}>Clear Filters</Text>
+          </View>
+        </TouchableRipple>
+      ) : null}
+
       <FlatList
         keyExtractor={item => item.id.toString()}
         style={{flex: 1, height: height, margin: 2}}
         data={flightData}
+        renderItem={renderItems}
         removeClippedSubviews
         windowSize={10}
         initialNumToRender={25}
-        renderItem={({item}) => <CardComponet data={item} />}
+        refreshing={refresh}
+        onRefresh={onPulltoRefresh}
       />
       <SortDialog
         isVisible={showSort}

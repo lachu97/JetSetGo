@@ -2,7 +2,6 @@ import React from 'react';
 import {Card, Divider, Text} from 'react-native-paper';
 import {Button, useWindowDimensions, View} from 'react-native';
 import {getDate, getTime} from '../../Helpers/Helpers';
-import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-simple-toast';
 
 const CardComponet = ({data}) => {

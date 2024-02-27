@@ -3,7 +3,7 @@ import appReducer from './AppReducer';
 import createSagaMiddleware from 'redux-saga';
 import reactotron from 'reactotron-react-native';
 import AppReactotron from '../Dev/ReactotronConfig';
-import {rootSaga} from './AppSaga';
+import {rootSaga} from './Sagas/AppSaga';
 const sagaMonitor = reactotron.createSagaMonitor();
 const sagaMiddleware = createSagaMiddleware({sagaMonitor});
 const rootReducer = {

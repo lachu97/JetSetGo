@@ -15,9 +15,11 @@ import AppNavigation from './AppModules/Navigation/AppNavigation.js';
 
 function App(): React.JSX.Element {
   return (
-    <Provider store={store}>
-      <AppNavigation />
-    </Provider>
+    <SafeAreaView style={{flex:1,backgroundColor:Colors.light}}>
+      <Provider store={store}>
+        <AppNavigation />
+      </Provider>
+    </SafeAreaView>
   );
 }
 

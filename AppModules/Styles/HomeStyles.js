@@ -14,4 +14,7 @@ export default StyleSheet.create({
     padding: 5,
     marginVertical: 5,
   },
+  flatListStyles:{
+
+  }
 });

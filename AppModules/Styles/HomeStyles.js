@@ -16,5 +16,10 @@ export default StyleSheet.create({
   },
   flatListStyles:{
 
-  }
+  },
+  loader: {
+    marginVertical: 2,
+    paddingVertical: 1,
+    marginHorizontal: 2,
+  },
 });

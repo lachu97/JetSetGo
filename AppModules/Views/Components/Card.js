@@ -3,10 +3,10 @@ import {Card, Divider, Text} from 'react-native-paper';
 import {Button, useWindowDimensions, View} from 'react-native';
 import {getDate, getTime} from '../../Helpers/Helpers';
 import {useNavigation} from '@react-navigation/native';
+import Toast from 'react-native-simple-toast';
 
 const CardComponet = ({data}) => {
-  const navigation = useNavigation();
-  const {width, height} = useWindowDimensions();
+  const {width} = useWindowDimensions();
   const item = data.displayData;
   return (
     <Card
@@ -15,7 +15,7 @@ const CardComponet = ({data}) => {
       <Card.Title
         titleStyle={{fontWeight: 'bold', fontSize: 14}}
         subtitle={`Rs: ${data.fare}`}
-        subtitleStyle={{fontWeight:500,padding:1}}
+        subtitleStyle={{fontWeight: 500, padding: 1}}
         title={`From ${item.source.airport.cityName} -> To ${item.destination.airport.cityName}`}
       />
       <Card.Content>
@@ -61,9 +61,11 @@ const CardComponet = ({data}) => {
       <Card.Actions>
         <Button
           onPress={() => {
-            navigation.navigate('Detail', {
-              item: item,
-            });
+            Toast.showWithGravity(
+              'Booking Successful',
+              Toast.LONG,
+              Toast.BOTTOM,
+            );
           }}
           title={'Book Now'}
         />

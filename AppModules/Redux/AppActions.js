@@ -11,3 +11,7 @@ export const sortAirlineAction = payload => ({
   type: 'SORT_AIRLINE',
   payload: payload,
 });
+export const sortStopAction = payload => ({
+  type: 'SORT_STOP',
+  payload: payload,
+});

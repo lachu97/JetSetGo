@@ -17,7 +17,7 @@ function* getFlightDataSaga() {
 
 function* sortPriceSaga(action) {
   try {
-    const {data, sortOrder} = action.payload;
+    const {sortOrder} = action.payload;
     yield put(addLoading(true));
 
     yield delay(600);
@@ -36,10 +36,24 @@ function* sortPriceSaga(action) {
     yield put(addLoading(false));
   }
 }
-
+function* sortByStop(action) {
+  try {
+    yield put(addLoading(true));
+    const {stopField} = action.payload;
+    yield delay(600);
+    let result = yield getDataFromAPI();
+    const sorted = result.data.result.filter(
+      flight => flight.displayData.stopInfo === stopField,
+    );
+    yield put(addFlightData(sorted));
+  } catch (e) {
+  } finally {
+    yield put(addLoading(false));
+  }
+}
 function* sortByAirline(action) {
   try {
-    const {data, airline} = action.payload;
+    const {airline} = action.payload;
     yield put(addLoading(true));
     yield delay(600);
     let result = yield getDataFromAPI();
@@ -60,5 +74,6 @@ export function* rootSaga() {
     takeLatest('GET_DATA', getFlightDataSaga),
     takeLatest('SORT_DATA', sortPriceSaga),
     takeLatest('SORT_AIRLINE', sortByAirline),
+    takeLatest('SORT_STOP', sortByStop),
   ]);
 }

@@ -43,4 +43,25 @@ export const AirlineDialog = ({isVisible, onDismiss, onChipPress, airline}) => {
     </Dialog>
   );
 };
+export const StopDialog = ({isVisible, onDismiss, onChipPress, stop}) => {
+  return (
+    <Dialog visible={isVisible} onDismiss={onDismiss}>
+      <Dialog.Title>Sort By Stops</Dialog.Title>
+      <Dialog.Content>
+        <Chip
+          icon={stop === 'Non stop' ? 'check-decagram' : null}
+          style={{marginVertical: 2}}
+          onPress={() => onChipPress('Non stop')}>
+          Non stop
+        </Chip>
+        <Chip
+          style={{marginVertical: 2}}
+          icon={stop === '1 Stop' ? 'check-decagram' : null}
+          onPress={() => onChipPress('1 Stop')}>
+          1 Stop
+        </Chip>
+      </Dialog.Content>
+    </Dialog>
+  );
+};
 export default React.memo(SortDialog);

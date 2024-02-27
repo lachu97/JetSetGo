@@ -30,7 +30,7 @@ export default StyleSheet.create({
     borderColor: MD2Colors.black,
   },
   text:{
-    padding:4,
+    padding:5,
     fontWeight:'bold'
   }
 });

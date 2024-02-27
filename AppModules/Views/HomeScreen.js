@@ -18,16 +18,19 @@ import {
   getFlightDataAction,
   sortAirlineAction,
   sortDataAction,
+  sortStopAction,
 } from '../Redux/AppActions';
 import CardComponet from './Components/Card';
-import SortDialog, {AirlineDialog} from './Components/SortDialog';
+import SortDialog, {AirlineDialog, StopDialog} from './Components/SortDialog';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const [showSort, setShowSort] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [showAirline, setShowAirline] = useState(false);
+  const [showStop, setShowStop] = useState(false);
   const [sortValue, setSortValue] = useState('');
+  const [stopField, setStopField] = useState('');
   const [sortAirline, setAirline] = useState('');
   const {width, height} = useWindowDimensions();
   const loading = useSelector(state => state.home.loading);
@@ -57,6 +60,11 @@ const HomeScreen = () => {
     await setAirline(item);
     await setShowAirline(false);
   }, []);
+  const onStopChipPress = useCallback(async item => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+    await setStopField(item);
+    await setShowStop(false);
+  }, []);
   useEffect(() => {
     if (sortAirline === '') {
       return;
@@ -68,6 +76,16 @@ const HomeScreen = () => {
       }),
     );
   }, [sortAirline]);
+  useEffect(() => {
+    if (stopField === '') {
+      return;
+    }
+    dispatch(
+      sortStopAction({
+        stopField: stopField,
+      }),
+    );
+  }, [stopField]);
   const onPulltoRefresh = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
     dispatch(getFlightDataAction());
@@ -79,10 +97,18 @@ const HomeScreen = () => {
     dispatch(getFlightDataAction());
     await setSortValue('');
     await setAirline('');
+    await setStopField('');
   }, []);
   const renderItems = useCallback(({item}) => {
     return <CardComponet data={item} />;
   }, []);
+  const ListHeader = useCallback(() => {
+    return (
+      <Text style={homeStyles.text}>
+        Total List Items : {flightData.length}
+      </Text>
+    );
+  }, [flightData]);
   return (
     <View style={homeStyles.container}>
       <Text style={homeStyles.textStyles}>Flight Search App</Text>
@@ -101,6 +127,12 @@ const HomeScreen = () => {
             setShowSort(true);
           }}
         />
+        <Button
+          title={'Sort By Stops'}
+          onPress={() => {
+            setShowStop(true);
+          }}
+        />
       </View>
       {loading ? (
         <ActivityIndicator
@@ -109,7 +141,7 @@ const HomeScreen = () => {
           color={MD2Colors.black}
         />
       ) : null}
-      {sortAirline !== '' || sortValue !== '' ? (
+      {sortAirline !== '' || sortValue !== '' || stopField !== '' ? (
         <TouchableRipple style={homeStyles.clearFilters} onPress={clearFilters}>
           <View style={{flexDirection: 'row'}}>
             <MaterialCommunityIcons
@@ -131,6 +163,7 @@ const HomeScreen = () => {
         windowSize={10}
         initialNumToRender={25}
         refreshing={refresh}
+        ListHeaderComponent={ListHeader}
         onRefresh={onPulltoRefresh}
       />
       <SortDialog
@@ -144,6 +177,12 @@ const HomeScreen = () => {
         onDismiss={() => setShowAirline(false)}
         onChipPress={onAirlineChipPress}
         airline={sortAirline}
+      />
+      <StopDialog
+        isVisible={showStop}
+        onDismiss={() => setShowStop(false)}
+        onChipPress={onStopChipPress}
+        stop={stopField}
       />
     </View>
   );
